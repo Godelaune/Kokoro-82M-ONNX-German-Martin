@@ -1,0 +1,64 @@
+services:
+  # German Kokoro ONNX FastAPI service with v1.2 process-isolated workers.
+  kokoro-onnx:
+    build:
+      context: .
+      dockerfile: onnx-docker/Dockerfile
+    container_name: kokoro-onnx
+    restart: unless-stopped
+    ports:
+      - "8881:8881"
+    environment:
+      - KOKORO_ONNX_THREADS=2
+      - KOKORO_ONNX_INTRA_OP_THREADS=2
+      - KOKORO_ONNX_INTER_OP_THREADS=1
+      - KOKORO_ONNX_EXECUTION_MODE=sequential
+      - KOKORO_ONNX_GRAPH_OPT=all
+      - KOKORO_ONNX_SPEED=1.125
+      - KOKORO_ONNX_TRIM=true
+      - KOKORO_ONNX_VOICE=martin
+      - KOKORO_ONNX_LANG=de
+      - OMP_NUM_THREADS=2
+      - OPENBLAS_NUM_THREADS=2
+      - MKL_NUM_THREADS=2
+      - NUMEXPR_NUM_THREADS=2
+      - OMP_WAIT_POLICY=PASSIVE
+      - KOKORO_PAUSE_DURATION=0.25
+      - KOKORO_WORKERS=2
+      - KOKORO_ONNX_ALLOW_SPINNING=0
+      - KOKORO_WARMUP_TEXT=Hallo.
+    volumes:
+      - ./german_text_rules.py:/app/german_text_rules.py:ro
+
+  # Wyoming bridge for Home Assistant Assist.
+  #
+  # This image patches wyoming_openai sentence segmentation so German dotted
+  # abbreviations and units such as "Prof.", "Min.", "Stck." and "ltr." do not
+  # cause premature streaming sentence splits.
+  wyoming_openai_onnx:
+    build: ./wyoming_openai_german_separator
+    image: wyoming_openai_german_separator:latest
+    container_name: wyoming_openai_onnx
+    restart: unless-stopped
+    ports:
+      - "10203:10203"
+    command:
+      - python3
+      - -m
+      - wyoming_openai
+      - --uri
+      - tcp://0.0.0.0:10203
+      - --languages
+      - de
+      - --tts-openai-url
+      - http://kokoro-onnx:8881/v1
+      - --tts-models
+      - kokoro
+      - --tts-streaming-models
+      - kokoro
+      - --tts-backend
+      - KOKORO_FASTAPI
+    volumes:
+      - ./german_text_rules.py:/app/german_text_rules.py:ro
+    depends_on:
+      - kokoro-onnx

@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Model and sample artifacts are hosted on Hugging Face.
+kokoro-martin.onnx
+voices-martin.npz
+martin-onnx-beispiel*.mp3
+*.wav
