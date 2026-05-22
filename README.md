@@ -2,7 +2,7 @@
 
 Docker and Home Assistant Assist setup for the German Kokoro voice **Martin**, using the ONNX export published on Hugging Face:
 
-[huggingFresse/Kokoro-82M-ONNX-German-Martin](https://huggingface.co/huggingFresse/Kokoro-82M-ONNX-German-Martin)
+[Godelaune/Kokoro-82M-ONNX-German-Martin](https://huggingface.co/Godelaune/Kokoro-82M-ONNX-German-Martin)
 
 This GitHub repository contains the service code, German text normalization rules, Docker setup and Wyoming bridge overlay. The large model files and audio samples stay on Hugging Face, which is the better home for model artifacts.
 
@@ -95,7 +95,7 @@ For very small systems, set `KOKORO_WORKERS=1`. For larger CPUs, benchmark highe
 
 The main v1.1/v1.2 German normalization sample is hosted on Hugging Face:
 
-[martin-onnx-beispiel-v1.1.mp3](https://huggingface.co/huggingFresse/Kokoro-82M-ONNX-German-Martin/resolve/main/martin-onnx-beispiel-v1.1.mp3)
+[martin-onnx-beispiel-v1.1.mp3](https://huggingface.co/Godelaune/Kokoro-82M-ONNX-German-Martin/resolve/main/martin-onnx-beispiel-v1.1.mp3)
 
 Spoken text:
 
@@ -129,4 +129,4 @@ The model is published under Apache 2.0 on Hugging Face. Please credit the origi
 - [kikiri-tts/kikiri-german-martin](https://huggingface.co/kikiri-tts/kikiri-german-martin)
 - [dida-80b/kokoro-german-hui-multispeaker-base](https://huggingface.co/dida-80b/kokoro-german-hui-multispeaker-base)
 - [hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M)
-- [huggingFresse/Kokoro-82M-ONNX-German-Martin](https://huggingface.co/huggingFresse/Kokoro-82M-ONNX-German-Martin)
+- [Godelaune/Kokoro-82M-ONNX-German-Martin](https://huggingface.co/Godelaune/Kokoro-82M-ONNX-German-Martin)
