@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-repo_url="https://huggingface.co/huggingFresse/Kokoro-82M-ONNX-German-Martin/resolve/main"
+repo_url="https://huggingface.co/Godelaune/Kokoro-82M-ONNX-German-Martin/resolve/main"
 
 download() {
   file="$1"
