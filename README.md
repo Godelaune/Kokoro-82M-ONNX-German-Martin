@@ -12,7 +12,8 @@ This GitHub repository contains the service code, German text normalization rule
 - `wyoming_openai_german_separator/`: a Docker overlay for `wyoming_openai` that protects German dotted abbreviations during streaming sentence segmentation.
 - `german_text_rules.py`: the shared German abbreviation, unit and sentence-boundary rule file used by both services.
 - `docker-compose.yml`: a two-container Home Assistant Assist setup for Kokoro ONNX plus Wyoming.
-- `scripts/download-model-files.sh`: downloads `kokoro-martin.onnx` and `voices-martin.npz` from Hugging Face.
+- `scripts/download-model-files.sh`: standalone helper that downloads `kokoro-martin.onnx` and `voices-martin.npz` from Hugging Face into the current directory (useful outside Docker). The `kokoro-onnx` container downloads these itself on startup, see below.
+- `.github/workflows/docker-build.yml`: builds both images in CI and pushes them to `ghcr.io/<owner>/kokoro-onnx` and `ghcr.io/<owner>/wyoming-openai-german-separator` on pushes to `main` and version tags.
 
 ## Relationship To Upstream Projects
 
@@ -35,17 +36,13 @@ git clone https://github.com/Godelaune/Kokoro-82M-ONNX-German-Martin.git
 cd Kokoro-82M-ONNX-German-Martin
 ```
 
-Download the model artifacts from Hugging Face:
-
-```bash
-sh scripts/download-model-files.sh
-```
-
 Start the ONNX TTS service and Wyoming bridge:
 
 ```bash
 docker compose up -d --build
 ```
+
+The `kokoro-onnx` container downloads `kokoro-martin.onnx` and `voices-martin.npz` from Hugging Face into the `kokoro-models` Docker volume on first startup, so no manual download step is required. Subsequent restarts reuse the cached files in that volume. If you want the model files locally without Docker (e.g. for other tooling), `scripts/download-model-files.sh` still works standalone.
 
 Check the TTS service:
 
@@ -70,7 +67,7 @@ The service normalizes common German forms before synthesis, including:
 - Euro amounts such as `42,80 EUR`
 - ordinal/cardinal contexts such as dates, quarters, tracks and numbered labels
 
-The same `german_text_rules.py` file is mounted into both containers, so the FastAPI service and Wyoming bridge use the same abbreviation and sentence-boundary rules.
+The same `german_text_rules.py` file is baked into both container images at build time, so the FastAPI service and Wyoming bridge use the same abbreviation and sentence-boundary rules.
 
 ## Process-Isolated Parallel Workers
 

@@ -28,7 +28,7 @@ services:
       - KOKORO_ONNX_ALLOW_SPINNING=0
       - KOKORO_WARMUP_TEXT=Hallo.
     volumes:
-      - ./german_text_rules.py:/app/german_text_rules.py:ro
+      - kokoro-models:/app/models
 
   # Wyoming bridge for Home Assistant Assist.
   #
@@ -36,7 +36,9 @@ services:
   # abbreviations and units such as "Prof.", "Min.", "Stck." and "ltr." do not
   # cause premature streaming sentence splits.
   wyoming_openai_onnx:
-    build: ./wyoming_openai_german_separator
+    build:
+      context: .
+      dockerfile: wyoming_openai_german_separator/Dockerfile
     image: wyoming_openai_german_separator:latest
     container_name: wyoming_openai_onnx
     restart: unless-stopped
@@ -58,7 +60,8 @@ services:
       - kokoro
       - --tts-backend
       - KOKORO_FASTAPI
-    volumes:
-      - ./german_text_rules.py:/app/german_text_rules.py:ro
     depends_on:
       - kokoro-onnx
+
+volumes:
+  kokoro-models:

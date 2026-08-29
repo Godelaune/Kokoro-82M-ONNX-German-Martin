@@ -12,11 +12,13 @@ RUN pip install --no-cache-dir \
     numpy \
     kokoro-onnx==0.5.0
 
-COPY kokoro-martin.onnx /app/kokoro-martin.onnx
-COPY voices-martin.npz /app/voices-martin.npz
+COPY german_text_rules.py /app/german_text_rules.py
 COPY onnx-docker/main.py /app/main.py
 COPY onnx-docker/tts_normalizer.py /app/tts_normalizer.py
+COPY onnx-docker/docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
 
 EXPOSE 8881
 
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8881", "--loop", "uvloop", "--http", "httptools"]

@@ -17,8 +17,9 @@ from tts_normalizer import normalize_tts_text
 
 
 # ====================== CONFIG ======================
-MODEL_PATH = os.getenv("KOKORO_ONNX_MODEL", "/app/kokoro-martin.onnx")
-VOICES_PATH = "/app/voices-martin.npz"
+MODEL_DIR = os.getenv("KOKORO_MODEL_DIR", "/app/models")
+MODEL_PATH = os.getenv("KOKORO_ONNX_MODEL", f"{MODEL_DIR}/kokoro-martin.onnx")
+VOICES_PATH = os.getenv("KOKORO_ONNX_VOICES", f"{MODEL_DIR}/voices-martin.npz")
 DEFAULT_VOICE = os.getenv("KOKORO_ONNX_VOICE", "martin")
 DEFAULT_LANG = os.getenv("KOKORO_ONNX_LANG", "de")
 DEFAULT_SPEED = float(os.getenv("KOKORO_ONNX_SPEED", "1.125"))

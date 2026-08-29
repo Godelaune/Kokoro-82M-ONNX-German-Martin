@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import shutil
 import site
 
 HELPERS = '''
@@ -55,6 +56,11 @@ def replace_once(text: str, old: str, new: str) -> str:
 
 
 handler_path = find_handler()
+
+german_text_rules_src = Path("/tmp/german_text_rules.py")
+shutil.copy(german_text_rules_src, handler_path.parent / "german_text_rules.py")
+print(f"Installed german_text_rules.py next to {handler_path}")
+
 source = handler_path.read_text(encoding="utf-8")
 print(f"handler.py found at: {handler_path}")
 print(f"handler.py first 200 chars:\n{source[:200]}")
@@ -64,7 +70,7 @@ if "GERMAN_SEPARATOR_DOT_PLACEHOLDER" in source:
 else:
     source = replace_once(source, "import logging\n", "import logging\nimport re\n")
 
-    import_line = "from german_text_rules import GERMAN_SEPARATOR_DOT_PATTERNS, GERMAN_SEPARATOR_DOT_PLACEHOLDER\n"
+    import_line = "from .german_text_rules import GERMAN_SEPARATOR_DOT_PATTERNS, GERMAN_SEPARATOR_DOT_PLACEHOLDER\n"
     if "from . import __version__\n" in source:
         source = replace_once(source, "from . import __version__\n", "from . import __version__\n" + import_line)
     else:

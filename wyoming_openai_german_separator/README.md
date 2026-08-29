@@ -4,7 +4,7 @@ Lightweight Docker overlay for [`ghcr.io/roryeckel/wyoming_openai`](https://gith
 
 This image keeps the upstream project intact and applies a small German sentence-boundary patch during the Docker build. It is meant for German Home Assistant Assist / Wyoming TTS pipelines where streaming sentence chunking should not split at common abbreviations, dates, or ordinal numbers.
 
-The sentence-boundary rules live in `german_text_rules.py`. The same file can also be mounted into a TTS backend such as a Kokoro service so pronunciation expansion and separator protection share one source of truth.
+The sentence-boundary rules live in `german_text_rules.py` at the repository root. The same file is also baked into a TTS backend such as a Kokoro service so pronunciation expansion and separator protection share one source of truth.
 
 ## What It Changes
 
@@ -26,8 +26,11 @@ The protected abbreviation patterns are derived from `ABBREVIATIONS` in `german_
 
 ## Build
 
+The build needs `german_text_rules.py` from the repository root, so build from
+the repo root with this Dockerfile rather than from this subdirectory:
+
 ```bash
-docker build -t wyoming_openai_german_separator:latest .
+docker build -f wyoming_openai_german_separator/Dockerfile -t wyoming_openai_german_separator:latest .
 ```
 
 ## Compose Example
@@ -35,12 +38,12 @@ docker build -t wyoming_openai_german_separator:latest .
 ```yaml
 services:
   wyoming_openai_onnx:
-    build: ./wyoming_openai_german_separator
+    build:
+      context: .
+      dockerfile: wyoming_openai_german_separator/Dockerfile
     image: wyoming_openai_german_separator:latest
     container_name: wyoming_openai_onnx
     restart: unless-stopped
-    volumes:
-      - ./german_text_rules.py:/usr/local/lib/python3.12/site-packages/wyoming_openai/german_text_rules.py:ro
 ```
 
 Keep the normal `wyoming_openai` command and environment settings from upstream.
