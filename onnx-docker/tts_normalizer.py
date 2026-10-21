@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from german_text_rules import ABBREVIATIONS, NUMBERED_UNITS
+from german_text_rules import ABBREVIATIONS, NUMBERED_UNITS, PRONUNCIATION_OVERRIDES
 
 NUM_TO_WORD = {
     0: "null",
@@ -349,5 +349,28 @@ def normalize_tts_text(text: str) -> str:
     text = text.replace(CARDINAL_LABEL_DOT_PLACEHOLDER, ".")
     text = re.sub(r"(?i)\bHbf\b\.?", "Hauptbahnhof", text)
     text = re.sub(r"(?i)\bEUR\b", "Euro", text)
+    
+    if PRONUNCIATION_OVERRIDES:
+        # Check for longer entries first.
+        entries = sorted(
+            PRONUNCIATION_OVERRIDES,
+            key=len,
+            reverse=True,
+        )
 
+        # Accept multiple spaces between words.
+        alternatives = [
+            r"\s+".join(re.escape(part) for part in entry.split())
+            for entry in entries
+        ]
+        pattern = r"(?<!\w)(?:" + "|".join(alternatives) + r")(?!\w)"
+
+        text = re.sub(
+            pattern,
+            lambda match: PRONUNCIATION_OVERRIDES[
+                " ".join(match.group(0).lower().split())
+            ],
+            text,
+            flags=re.IGNORECASE,
+        )
     return text

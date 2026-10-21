@@ -75,3 +75,18 @@ GERMAN_SEPARATOR_EXTRA_DOT_PATTERNS = (
 GERMAN_SEPARATOR_DOT_PATTERNS = tuple(
     pattern for pattern, _replacement in ABBREVIATIONS if r"\." in pattern
 ) + GERMAN_SEPARATOR_UNIT_DOT_PATTERNS + GERMAN_SEPARATOR_EXTRA_DOT_PATTERNS
+PRONUNCIATION_OVERRIDES = {
+    "timer": "Teimer",
+    "countdown":	"Kauntdaun",
+    "standby":	"Ständbei",
+    "offline":	"offlein",
+    "update":	"Apdäjt",
+    "backup":	"Bäckapp",
+    "bluetooth":	"Bluhtuhs",
+    "playlist":	"Pläjlist",
+    "spotify":	"Spottifei",
+    "dashboard":	"Däschbord",
+    "home":	"Hohm", 
+    "assistant": "Ässistent",
+    "küche":	"Kühche",
+}
